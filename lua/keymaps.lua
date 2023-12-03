@@ -14,7 +14,7 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnos
 vim.keymap.set('n', '<leader>dl', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>da', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
-vim.keymap.set('n', '<leader>ih', function() vim.lsp.inlay_hint.enable(0,true) end , {desc = 'enable inlay hints'}) 
+vim.keymap.set('n', '<leader>ih', function() vim.lsp.inlay_hint.enable(0, true) end, { desc = 'enable inlay hints' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -28,3 +28,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 -- vim: ts=2 sts=2 sw=2 et
+--
+--
+-- tree
+vim.keymap.set('n', '<leader>e', '<Cmd>Neotree focus<CR>', { desc = "focus explorer" })
+
+--tabs
+vim.keymap.set('n', "<tab>", "<Cmd>BufferNext<CR>")
+vim.keymap.set('n', '<S-tab>', "<Cmd>BufferPrevious<CR>")

@@ -1,6 +1,3 @@
-vim.keymap.set('n', "<tab>", "<Cmd>BufferNext<CR>")
-vim.keymap.set('n', '<S-tab>', "<Cmd>BufferPrevious<CR>")
-
 return {
 	'romgrk/barbar.nvim',
 	dependencies = {

@@ -7,9 +7,6 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 
-vim.keymap.set('n', '<leader>e', '<Cmd>Neotree toggle<CR>', { desc = "open explorer" })
-vim.keymap.set('n', '<leader>o', '<Cmd>Neotree focus<CR>', { desc = "focus explorer" })
-
 
 return {
 	"nvim-neo-tree/neo-tree.nvim",
