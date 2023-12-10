@@ -36,3 +36,6 @@ vim.keymap.set('n', '<leader>e', '<Cmd>Neotree focus<CR>', { desc = "focus explo
 --tabs
 vim.keymap.set('n', "<tab>", "<Cmd>BufferNext<CR>")
 vim.keymap.set('n', '<S-tab>', "<Cmd>BufferPrevious<CR>")
+
+
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true })
