@@ -1,12 +1,19 @@
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
   -- NOTE: Remember that lua is a real programming language, and as such it is possible
   -- to define small helper and utility functions so you don't have to repeat yourself
   -- many times.
   --
   -- In this case, we create a function that lets us more easily define mappings specific
   -- for LSP related items. It sets the mode, buffer and description for us each time.
+  local filetyp = vim.fn.getbufvar(bufnr, '&filetype')
+  if client.name == 'html' and filetyp == 'rust' then
+    client.server_capabilities.documentFormattingProvider = false
+    -- client.server_capabilities.documentRangeFormattingProvider = false
+  end
+
+
   local nmap = function(keys, func, desc)
     if desc then
       desc = 'LSP: ' .. desc
@@ -75,7 +82,15 @@ local servers = {
   -- pyright = {},
   -- rust_analyzer = {},
   -- tsserver = {},
-  -- html = { filetypes = { 'html', 'twig', 'hbs'} },
+  html = {
+    filetypes = { 'html', 'twig', 'hbs', 'rust' },
+    capabilities = {
+      textDocument = {
+        formating = false,
+      },
+    },
+  },
+  htmx = { filetypes = { 'html', 'twig', 'hbs', 'rust' } },
 
   lua_ls = {
     Lua = {
