@@ -1,3 +1,7 @@
+-- add filetyps
+vim.filetype.add({ extension = { templ = 'templ' } })
+vim.filetype.add({ extension = { typst = 'typst' } })
+
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(client, bufnr)
@@ -83,15 +87,15 @@ local servers = {
   -- rust_analyzer = {},
   -- tsserver = {},
   html = {
-    filetypes = { 'html', 'twig', 'hbs', 'rust' },
+    filetypes = { 'html', 'twig', 'hbs', 'rust', 'templ' },
     capabilities = {
       textDocument = {
         formating = false,
       },
     },
   },
-  htmx = { filetypes = { 'html', 'twig', 'hbs', 'rust' } },
-
+  htmx = { filetypes = { 'html', 'twig', 'hbs', 'rust', 'templ' } },
+  templ = { filetypes = { 'templ', 'go' } },
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
