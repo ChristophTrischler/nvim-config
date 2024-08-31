@@ -1,6 +1,8 @@
 -- add filetyps
 vim.filetype.add({ extension = { templ = 'templ' } })
+vim.filetype.add({ extension = { typst = 'typ' } })
 vim.filetype.add({ extension = { typst = 'typst' } })
+
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
@@ -11,11 +13,11 @@ local on_attach = function(client, bufnr)
   --
   -- In this case, we create a function that lets us more easily define mappings specific
   -- for LSP related items. It sets the mode, buffer and description for us each time.
-  local filetyp = vim.fn.getbufvar(bufnr, '&filetype')
-  if client.name == 'html' and filetyp == 'rust' then
-    client.server_capabilities.documentFormattingProvider = false
-    -- client.server_capabilities.documentRangeFormattingProvider = false
-  end
+  -- local filetyp = vim.fn.getbufvar(bufnr, '&filetype')
+  -- if client.name == 'html' and filetyp == 'rust' then
+  --   client.server_capabilities.documentFormattingProvider = false
+  --   -- client.server_capabilities.documentRangeFormattingProvider = false
+  -- end
 
 
   local nmap = function(keys, func, desc)
@@ -53,7 +55,7 @@ local on_attach = function(client, bufnr)
     vim.lsp.buf.format()
   end, { desc = 'Format current buffer with LSP' })
 
-  vim.lsp.inlay_hint.enable(bufnr, true)
+  vim.lsp.inlay_hint.enable(true)
 end
 
 -- document existing key chains
@@ -87,14 +89,14 @@ local servers = {
   -- rust_analyzer = {},
   -- tsserver = {},
   html = {
-    filetypes = { 'html', 'twig', 'hbs', 'rust', 'templ' },
+    filetypes = { 'html', 'twig', 'hbs', 'templ' },
     capabilities = {
       textDocument = {
         formating = false,
       },
     },
   },
-  htmx = { filetypes = { 'html', 'twig', 'hbs', 'rust', 'templ' } },
+  htmx = { filetypes = { 'html', 'twig', 'hbs', 'templ' } },
   templ = { filetypes = { 'templ', 'go' } },
   lua_ls = {
     Lua = {
@@ -104,6 +106,14 @@ local servers = {
       -- diagnostics = { disable = { 'missing-fields' } },
     },
   },
+  tailwindcss = {
+  },
+  tinymist = {
+    filetypes = { "typ", "typst" },
+    exportPdf = "onType",
+    outputPath = "$root/target/$dir/$name",
+    single_file_support = true,
+  }
 }
 
 -- Setup neovim lua configuration
@@ -127,8 +137,24 @@ mason_lspconfig.setup_handlers {
       on_attach = on_attach,
       settings = servers[server_name],
       filetypes = (servers[server_name] or {}).filetypes,
+      single_file_support = (servers[server_name] or {}).single_file_support or false,
+      root_dir = function()
+        return vim.fn.getcwd()
+      end,
     }
   end,
+}
+
+
+
+require('lspconfig')["rust_analyzer"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    ["rust-analyzer"] = {
+      command = "rust-analyzer",
+    },
+  },
 }
 
 -- vim: ts=2 sts=2 sw=2 et
