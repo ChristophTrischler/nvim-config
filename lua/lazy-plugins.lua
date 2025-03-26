@@ -21,9 +21,9 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     init_options = {
       userLanguages = {
-        eelixir = "html-eex",
-        eruby = "erb",
-        rust = "html",
+        eelixir = 'html-eex',
+        eruby = 'erb',
+        rust = 'html',
       },
     },
     dependencies = {
@@ -57,7 +57,26 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',  opts = {} },
+  {
+    'folke/which-key.nvim',
+    opts = {},
+    keys = {
+      { '<leader>c',  group = '[C]ode' },
+      { '<leader>c_', hidden = true },
+      { '<leader>d',  group = '[D]ocument' },
+      { '<leader>d_', hidden = true },
+      { '<leader>g',  group = '[G]it' },
+      { '<leader>g_', hidden = true },
+      { '<leader>h',  group = 'More git' },
+      { '<leader>h_', hidden = true },
+      { '<leader>r',  group = '[R]ename' },
+      { '<leader>r_', hidden = true },
+      { '<leader>s',  group = '[S]earch' },
+      { '<leader>s_', hidden = true },
+      { '<leader>w',  group = '[W]orkspace' },
+      { '<leader>w_', hidden = true },
+    },
+  },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -97,77 +116,14 @@ require('lazy').setup({
     },
   },
 
-  {
-    "craftzdog/solarized-osaka.nvim",
-    lazy = false,
-    priority = 1000,
-    opts = {},
-    config = function()
-      require("solarized-osaka").setup({
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        transparent = true,     -- Enable this to disable setting the background color
-        terminal_colors = true, -- Configure the colors used when opening a `:terminal` in [Neovim](https://github.com/neovim/neovim)
-        styles = {
-          -- Style to be applied to different syntax groups
-          -- Value is any valid attr-list value for `:help nvim_set_hl`
-          comments = { italic = true },
-          keywords = { italic = true },
-          functions = {},
-          variables = {},
-          -- Background styles. Can be "dark", "transparent" or "normal"
-          sidebars = "dark",              -- style for sidebars, see below
-          floats = "dark",                -- style for floating windows
-        },
-        sidebars = { "qf", "help" },      -- Set a darker background on sidebar-like windows. For example: `["qf", "vista_kind", "terminal", "packer"]`
-        day_brightness = 0.3,             -- Adjusts the brightness of the colors of the **Day** style. Number between 0 and 1, from dull to vibrant colors
-        hide_inactive_statusline = false, -- Enabling this option, will hide inactive statuslines and replace them with a thin border instead. Should work with the standard **StatusLine** and **LuaLine**.
-        dim_inactive = false,             -- dims inactive windows
-        lualine_bold = false,             -- When `true`, section headers in the lualine theme will be bold
-
-        --- You can override specific color groups to use other groups or a hex color
-        --- function will be called with a ColorScheme table
-        ---@param colors ColorScheme
-        on_colors = function(colors)
-        end,
-
-        --- You can override specific highlights to use other groups or a hex color
-        --- function will be called with a Highlights and ColorScheme table
-        ---@param highlights Highlights
-        ---@param colors ColorScheme
-        on_highlights = function(highlights, colors)
-          highlights.LspInlayHint = {
-            bg = colors.none,
-            fg = colors.base01
-          }
-        end,
-      })
-      vim.cmd [[colorscheme solarized-osaka]]
-    end
-  },
-
-  {
-    -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim',
-    -- See `:help lualine.txt`
-    opts = {
-      options = {
-        icons_enabled = false,
-        theme = 'onedark',
-        component_separators = '|',
-        section_separators = '',
-      },
-    },
-  },
-
-  {
+  --[[ {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help ibl`
     main = 'ibl',
     opts = {},
-  },
+  }, ]]
 
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
@@ -202,18 +158,7 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
-  -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
-  --       These are some example plugins that I've included in the kickstart repository.
-  --       Uncomment any of the lines below to enable them.
-  require 'kickstart.plugins.autoformat',
-
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
-  --    up-to-date with whatever is in the kickstart repo.
-  --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --
-  --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  { import = 'custom.plugins' },
+  { import = 'plugins' },
 }, {})
 
 -- vim: ts=2 sts=2 sw=2 et

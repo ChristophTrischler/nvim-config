@@ -1,25 +1,8 @@
--- add filetyps
-vim.filetype.add({ extension = { templ = 'templ' } })
-vim.filetype.add({ extension = { typst = 'typ' } })
-vim.filetype.add({ extension = { typst = 'typst' } })
+vim.filetype.add { extension = { templ = 'templ' } }
+vim.filetype.add { extension = { typst = 'typ' } }
+vim.filetype.add { extension = { typst = 'typst' } }
 
-
--- [[ Configure LSP ]]
---  This function gets run when an LSP connects to a particular buffer.
 local on_attach = function(client, bufnr)
-  -- NOTE: Remember that lua is a real programming language, and as such it is possible
-  -- to define small helper and utility functions so you don't have to repeat yourself
-  -- many times.
-  --
-  -- In this case, we create a function that lets us more easily define mappings specific
-  -- for LSP related items. It sets the mode, buffer and description for us each time.
-  -- local filetyp = vim.fn.getbufvar(bufnr, '&filetype')
-  -- if client.name == 'html' and filetyp == 'rust' then
-  --   client.server_capabilities.documentFormattingProvider = false
-  --   -- client.server_capabilities.documentRangeFormattingProvider = false
-  -- end
-
-
   local nmap = function(keys, func, desc)
     if desc then
       desc = 'LSP: ' .. desc
@@ -56,38 +39,22 @@ local on_attach = function(client, bufnr)
   end, { desc = 'Format current buffer with LSP' })
 
   vim.lsp.inlay_hint.enable(true)
+
+
+  client.server_capabilities.semanticTokensProvider = nil
 end
 
 -- document existing key chains
-require('which-key').register {
-  ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-  ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-  ['<leader>g'] = { name = '[G]it', _ = 'which_key_ignore' },
-  ['<leader>h'] = { name = 'More git', _ = 'which_key_ignore' },
-  ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-  ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-  ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-}
-
+require 'which-key'
 -- mason-lspconfig requires that these setup functions are called in this order
 -- before setting up the servers.
 require('mason').setup()
 require('mason-lspconfig').setup()
 
--- Enable the following language servers
---  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
---
---  Add any additional override configuration in the following tables. They will be passed to
---  the `settings` field of the server config. You must look up that documentation yourself.
---
---  If you want to override the default filetypes that your language server will attach to you can
---  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  -- tsserver = {},
+  clangd = {},
+  gopls = {},
+  pyright = {},
   html = {
     filetypes = { 'html', 'twig', 'hbs', 'templ' },
     capabilities = {
@@ -106,14 +73,14 @@ local servers = {
       -- diagnostics = { disable = { 'missing-fields' } },
     },
   },
-  tailwindcss = {
-  },
+  tailwindcss = {},
   tinymist = {
-    filetypes = { "typ", "typst" },
-    exportPdf = "onType",
-    outputPath = "$root/target/$dir/$name",
     single_file_support = true,
-  }
+    filetypes = { 'typ', 'typst' },
+    exportPdf = 'onType',
+    outputPath = '$root/target/$dir/$name',
+    semantic_tokens = "disable",
+  },
 }
 
 -- Setup neovim lua configuration
@@ -132,9 +99,17 @@ mason_lspconfig.setup {
 
 mason_lspconfig.setup_handlers {
   function(server_name)
+    local attach_fn = on_attach
+    if server_name == "tinymist" then
+      attach_fn = function(client, bufnr)
+        client.server_capabilities.semanticTokensProvider = nil
+        on_attach(client, bufnr)
+      end
+    end
+
     require('lspconfig')[server_name].setup {
       capabilities = capabilities,
-      on_attach = on_attach,
+      on_attach = attach_fn,
       settings = servers[server_name],
       filetypes = (servers[server_name] or {}).filetypes,
       single_file_support = (servers[server_name] or {}).single_file_support or false,
@@ -145,16 +120,22 @@ mason_lspconfig.setup_handlers {
   end,
 }
 
-
-
-require('lspconfig')["rust_analyzer"].setup {
+require('lspconfig')['rust_analyzer'].setup {
   on_attach = on_attach,
   capabilities = capabilities,
   settings = {
-    ["rust-analyzer"] = {
-      command = "rust-analyzer",
+    ['rust-analyzer'] = {
+      command = 'rust-analyzer',
     },
   },
 }
 
--- vim: ts=2 sts=2 sw=2 et
+
+require('lspconfig')["dartls"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  filetypes = { 'dart' },
+  cmd = { 'dart', 'language-server', '--protocol=lsp' },
+  settings = {
+  }
+}
